@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
+@Injectable()
 export class NotificationService {
   async sendNotification({
     receiverId,

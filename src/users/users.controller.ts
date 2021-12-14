@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Injectable,
   Param,
   Patch,
   Post,
@@ -28,6 +29,7 @@ import { UsersService } from './users.service';
 
 @ApiTags('users')
 @Controller('users')
+@Injectable()
 //@UseGuards(TelegramUserGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}

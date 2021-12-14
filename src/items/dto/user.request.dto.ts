@@ -12,7 +12,7 @@ export class UserDTO {
 
   @Expose()
   @ApiProperty({ required: false })
-  tg_username: string;
+  tg_username?: string;
 
   @Expose()
   @ApiProperty({ required: false })
@@ -24,9 +24,9 @@ export class UserDTO {
 
   @Expose()
   @ApiProperty({ required: false })
-  bio: string;
+  bio?: string;
 
   @Expose()
   @ApiProperty({ required: false })
-  progress: string;
+  progress?: string;
 }
