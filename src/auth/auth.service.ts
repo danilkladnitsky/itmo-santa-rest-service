@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService) {}
-  async getAccessToken(code, tg_id) {
+  async getAccessToken(code, tg_id, resController) {
     try {
       const { CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, REDIRECT_URI } =
         process.env;
@@ -39,17 +39,14 @@ export class AuthService {
 
       const { access_token } = res.data;
 
-      return await this.getUserData(access_token, tg_id);
+      return await this.getUserData(access_token, tg_id, res);
     } catch (err) {
       console.log(err);
-      throw new ForbiddenException(
-        { type: 'error', message: 'Invalid user data' },
-        'Invalid user data',
-      );
+      resController.redirect('https://itmosanta.web.app/?status=error');
     }
   }
 
-  async getUserData(token, tg_id) {
+  async getUserData(token, tg_id, resController) {
     try {
       const headers = {
         Accept: '*/*',
@@ -71,19 +68,15 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
-        return {
-          messageRU: 'Аккаунт подтвержден. Ждите сообщение от бота',
-          messageEN: 'Your account was verified. Bot will send instructions',
-        };
+        resController.redirect('https://itmosanta.web.app/?status=success');
       } catch (ConflictException) {
-        return {
-          type: 'error',
-          message: 'Вы уже зарегистрированы / You already registered',
-        };
+        resController.redirect(
+          'https://itmosanta.web.app/?status=already_registered',
+        );
       }
     } catch (err) {
       console.log(err);
-
+      resController.redirect('https://itmosanta.web.app/?status=error');
       throw new ForbiddenException(
         { type: 'error', message: 'Invalid user token' },
         'Invalid user token',

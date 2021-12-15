@@ -1,4 +1,10 @@
-import { Controller, ForbiddenException, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
@@ -10,13 +16,14 @@ export class AuthController {
   async getRedirectParams(
     @Query('code') code: string,
     @Query('state') tg_id: string,
+    @Res() resController,
   ) {
     if (!code || !tg_id) {
-      throw new ForbiddenException(
-        { type: 'error', message: 'Invalid link' },
-        'Invalid link',
+      await resController.redirect(
+        'https://itmosanta.web.app/?status=invalid_data',
       );
+      return;
     }
-    return await this.authService.getAccessToken(code, tg_id);
+    return await this.authService.getAccessToken(code, tg_id, resController);
   }
 }
