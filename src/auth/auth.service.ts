@@ -41,6 +41,7 @@ export class AuthService {
 
       return access_token;
     } catch (err) {
+      console.log('ERROR', `${tg_id} не смог получить токен авторизации в ИСУ`);
       console.log(err);
       return 'error';
     }
@@ -68,11 +69,18 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
+        console.log('SUCCESS', `${userEntity.name} зарегистрировался`);
+
         return 'success';
       } catch (ConflictException) {
+        console.log(
+          'WARNING',
+          `${userEntity.name} попытался во второй раз зарегаться`,
+        );
         return 'already_registered';
       }
     } catch (err) {
+      console.log('ERROR', `Ошибка с получением данных пользователя ${tg_id}`);
       console.log(err);
       return 'error';
     }

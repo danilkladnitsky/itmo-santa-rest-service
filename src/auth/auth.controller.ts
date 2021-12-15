@@ -41,6 +41,10 @@ export class AuthController {
       telegram_data.tg_id,
     );
 
+    console.log(
+      'INFO',
+      `Пользователь был перенаправлен на ${safe_page}=${status}`,
+    );
     await resController.redirect(`${safe_page}=${status}`);
   }
 
@@ -50,6 +54,7 @@ export class AuthController {
 
       return data;
     } catch (err) {
+      console.log('ERROR', `Токен авторизации не прошёл проверку`);
       return {
         type: 'error',
         status: 'invalid_data',
