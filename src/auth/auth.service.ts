@@ -39,14 +39,14 @@ export class AuthService {
 
       const { access_token } = res.data;
 
-      return await this.getUserData(access_token, tg_id);
+      return access_token;
     } catch (err) {
       console.log(err);
       return 'error';
     }
   }
 
-  async getUserData(token, tg_id) {
+  async saveUserInfo(token, tg_id) {
     try {
       const headers = {
         Accept: '*/*',

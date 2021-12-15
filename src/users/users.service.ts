@@ -22,7 +22,7 @@ export class UsersService {
     let thisUser;
 
     try {
-      thisUser = await this.getUser('tg_id', user.tg_id);
+      thisUser = await this.getUser('isu', user.isu);
     } catch (err) {}
     const ifUserExist = Boolean(thisUser);
     if (ifUserExist) {
