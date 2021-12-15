@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from 'src/items/model/user.model';
-import { NotificationsModule } from 'src/notifications/notifications.module';
 import { NotificationService } from 'src/notifications/notifications.service';
 import { UsersModule } from 'src/users/users.module';
 import { UsersService } from 'src/users/users.service';

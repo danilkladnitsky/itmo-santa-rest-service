@@ -7,7 +7,7 @@ import { GiftsModule } from './gifts/gitfs.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { AuthModule } from './auth/auth.module';
 
-const { MONGODB_URL } = process.env;
+const { MODE, DEV_MONGODB_URL, PROD_MONGODB_URL } = process.env;
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ const { MONGODB_URL } = process.env;
     GiftsModule,
     NotificationsModule,
     AuthModule,
-    MongooseModule.forRoot(MONGODB_URL),
+    MongooseModule.forRoot(MODE === 'DEV' ? DEV_MONGODB_URL : PROD_MONGODB_URL),
   ],
   controllers: [AppController],
   providers: [AppService],

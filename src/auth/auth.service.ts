@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import { NotificationService } from 'src/notifications/notifications.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -64,10 +63,7 @@ export class AuthService {
       );
 
       const { isu, name, email } = res.data;
-
       const userEntity = { tg_id, isu, name, email };
-
-      console.log('received user', userEntity);
 
       return await this.usersService.createUser(userEntity);
     } catch (err) {
