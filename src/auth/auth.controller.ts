@@ -22,7 +22,7 @@ export class AuthController {
   ) {
     const safe_page = 'https://itmosanta.web.app/?status';
     if (!code || !token) {
-      await resController.redirect(`${safe_page}=invalid_data`);
+      await resController.redirect(`${safe_page}=token_expired`);
       return;
     }
 
