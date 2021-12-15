@@ -18,12 +18,12 @@ export class AuthController {
     @Query('state') tg_id: string,
     @Res() resController,
   ) {
+    const safe_page = 'https://itmosanta.web.app/?status';
     if (!code || !tg_id) {
-      await resController.redirect(
-        'https://itmosanta.web.app/?status=invalid_data',
-      );
+      await resController.redirect(`${safe_page}=invalid_data`);
       return;
     }
-    return await this.authService.getAccessToken(code, tg_id, resController);
+    const status = await this.authService.getAccessToken(code, tg_id);
+    await resController.redirect(`${safe_page}=${status}`);
   }
 }

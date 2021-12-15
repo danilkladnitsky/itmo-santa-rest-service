@@ -5,7 +5,7 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class AuthService {
   constructor(private usersService: UsersService) {}
-  async getAccessToken(code, tg_id, resController) {
+  async getAccessToken(code, tg_id) {
     try {
       const { CLIENT_ID, CLIENT_SECRET, GRANT_TYPE, REDIRECT_URI } =
         process.env;
@@ -39,14 +39,14 @@ export class AuthService {
 
       const { access_token } = res.data;
 
-      return await this.getUserData(access_token, tg_id, res);
+      return await this.getUserData(access_token, tg_id);
     } catch (err) {
       console.log(err);
-      resController.redirect('https://itmosanta.web.app/?status=error');
+      return 'error';
     }
   }
 
-  async getUserData(token, tg_id, resController) {
+  async getUserData(token, tg_id) {
     try {
       const headers = {
         Accept: '*/*',
@@ -68,19 +68,13 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
-        resController.redirect('https://itmosanta.web.app/?status=success');
+        return 'success';
       } catch (ConflictException) {
-        resController.redirect(
-          'https://itmosanta.web.app/?status=already_registered',
-        );
+        return 'already_registered';
       }
     } catch (err) {
       console.log(err);
-      resController.redirect('https://itmosanta.web.app/?status=error');
-      throw new ForbiddenException(
-        { type: 'error', message: 'Invalid user token' },
-        'Invalid user token',
-      );
+      return 'error';
     }
   }
 }
