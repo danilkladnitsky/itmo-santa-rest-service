@@ -10,6 +10,7 @@ export const UserSchema = new mongoose.Schema(
     bio: { type: String, required: false },
     progress: { type: String, required: false },
     letter: { type: String, required: false },
+    language_code: { type: String, default: 'ru' },
   },
   { timestamps: true },
 );

@@ -22,7 +22,7 @@ export class AuthController {
   ) {
     const safe_page = 'https://itmosanta.web.app/?status';
     if (!code || !token) {
-      await resController.redirect(`${safe_page}=token_expired`);
+      await resController.redirect(`${safe_page}=invalid_data`);
       return;
     }
 
@@ -40,6 +40,7 @@ export class AuthController {
     const status = await this.authService.saveUserInfo(
       access_token,
       telegram_data.tg_id,
+      telegram_data.language_code,
     );
 
     console.log(
@@ -58,7 +59,7 @@ export class AuthController {
       console.log('ERROR', `Токен авторизации не прошёл проверку`);
       return {
         type: 'error',
-        status: 'invalid_data',
+        status: 'invalid_token',
       };
     }
   }

@@ -47,7 +47,7 @@ export class AuthService {
     }
   }
 
-  async saveUserInfo(token, tg_id) {
+  async saveUserInfo(token, tg_id, language_code) {
     try {
       const headers = {
         Accept: '*/*',
@@ -65,7 +65,7 @@ export class AuthService {
       );
 
       const { isu, name, email } = res.data;
-      const userEntity = { tg_id, isu, name, email };
+      const userEntity = { tg_id, isu, name, email, language_code };
 
       try {
         await this.usersService.createUser(userEntity);
