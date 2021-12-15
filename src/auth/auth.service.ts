@@ -71,17 +71,19 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
+        return {
+          messageRU: 'Аккаунт подтвержден. Ждите сообщение от бота',
+          messageEN: 'Your account was verified. Bot will send instructions',
+        };
       } catch (ConflictException) {
-        throw new ForbiddenException(
-          {
-            type: 'error',
-            message: 'Вы уже зарегистрированы / You already registered',
-          },
-          'already registered',
-        );
+        return {
+          type: 'error',
+          message: 'Вы уже зарегистрированы / You already registered',
+        };
       }
     } catch (err) {
       console.log(err);
+
       throw new ForbiddenException(
         { type: 'error', message: 'Invalid user token' },
         'Invalid user token',
