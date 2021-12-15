@@ -28,7 +28,7 @@ export class AuthController {
 
     const telegram_data = await this.decodeToken(token);
     if (telegram_data.type === 'error') {
-      await resController.redirect(`${safe_page}=${telegram_data.tg_id}`);
+      await resController.redirect(`${safe_page}=${telegram_data.status}`);
       return;
     }
 
