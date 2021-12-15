@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, ForbiddenException, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 
@@ -11,6 +11,12 @@ export class AuthController {
     @Query('code') code: string,
     @Query('state') tg_id: string,
   ) {
+    if (!code || !tg_id) {
+      throw new ForbiddenException(
+        { type: 'error', message: 'Invalid link' },
+        'Invalid link',
+      );
+    }
     return await this.authService.getAccessToken(code, tg_id);
   }
 }

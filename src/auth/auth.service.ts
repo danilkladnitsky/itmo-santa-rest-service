@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { UsersService } from 'src/users/users.service';
 
@@ -42,6 +42,10 @@ export class AuthService {
       return await this.getUserData(access_token, tg_id);
     } catch (err) {
       console.log(err);
+      throw new ForbiddenException(
+        { type: 'error', message: 'Invalid user data' },
+        'Invalid user data',
+      );
     }
   }
 
@@ -65,9 +69,23 @@ export class AuthService {
       const { isu, name, email } = res.data;
       const userEntity = { tg_id, isu, name, email };
 
-      return await this.usersService.createUser(userEntity);
+      try {
+        await this.usersService.createUser(userEntity);
+      } catch (ConflictException) {
+        throw new ForbiddenException(
+          {
+            type: 'error',
+            message: 'Вы уже зарегистрированы / You already registered',
+          },
+          'already registered',
+        );
+      }
     } catch (err) {
       console.log(err);
+      throw new ForbiddenException(
+        { type: 'error', message: 'Invalid user token' },
+        'Invalid user token',
+      );
     }
   }
 }
