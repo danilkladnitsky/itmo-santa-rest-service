@@ -34,8 +34,8 @@ export class UsersService {
 
     const newUser = new this.userModel({ ...user });
 
-    await this.handleUserCreate(user.tg_id);
     await newUser.save();
+    await this.handleUserCreate(user.tg_id);
     return 'Вы зарегистрировались! Сейчас вам придёт сообщение от бота в Телеграме. Your registration was successful! Now you will receive the message from bot with new information.';
   }
 
