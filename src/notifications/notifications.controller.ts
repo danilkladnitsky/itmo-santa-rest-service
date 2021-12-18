@@ -20,4 +20,12 @@ export class NotificationsController {
   async sendNotification(@Query() notification: NotificationDTO) {
     return await this.notificationService.sendNotification(notification);
   }
+
+  @Post('sendInfo')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Send notification' })
+  @ApiUnprocessableEntityResponse({ description: 'Validation errors' })
+  async sendInfo(@Query() notification: NotificationDTO) {
+    return await this.notificationService.sendOneNotification(notification);
+  }
 }

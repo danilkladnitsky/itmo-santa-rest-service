@@ -3,6 +3,19 @@ import axios from 'axios';
 
 @Injectable()
 export class NotificationService {
+  async sendOneNotification({ receiverId, message }) {
+    try {
+      const res = await axios.post(
+        `${process.env.TELEGRAM_BOT_REST_URL}/notifications/send`,
+        { receiverId, message },
+      );
+
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return err.response?.data;
+    }
+  }
   async sendNotification({
     receiverId,
     event,
