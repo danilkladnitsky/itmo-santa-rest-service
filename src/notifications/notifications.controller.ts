@@ -1,4 +1,4 @@
-import { Controller, Post, Query } from '@nestjs/common';
+import { Body, Controller, Post, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -25,7 +25,7 @@ export class NotificationsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Send notification' })
   @ApiUnprocessableEntityResponse({ description: 'Validation errors' })
-  async sendInfo(@Query() notification: NotificationDTO) {
+  async sendInfo(@Body() notification: NotificationDTO) {
     return await this.notificationService.sendOneNotification(notification);
   }
 }
