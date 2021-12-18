@@ -69,13 +69,13 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
-        console.log('SUCCESS', `${userEntity.name} зарегистрировался`);
+        console.log('SUCCESS', `${userEntity.name}#${tg_id} зарегистрировался`);
 
         return 'success';
       } catch (ConflictException) {
         console.log(
           'WARNING',
-          `${userEntity.name} попытался во второй раз зарегаться`,
+          `${userEntity.name}#${tg_id} попытался во второй раз зарегаться`,
         );
         return 'already_registered';
       }
