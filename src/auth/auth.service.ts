@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 import { UsersService } from 'src/users/users.service';
 
@@ -69,7 +69,11 @@ export class AuthService {
 
       try {
         await this.usersService.createUser(userEntity);
-        console.log('SUCCESS', `${userEntity.name}#${tg_id} зарегистрировался`);
+        const date = '[' + new Date().toUTCString() + '] ';
+        console.log(
+          'SUCCESS',
+          `${userEntity.name}#${tg_id} зарегистрировался ${date}`,
+        );
 
         return 'success';
       } catch (ConflictException) {
