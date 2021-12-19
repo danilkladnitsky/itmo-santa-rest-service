@@ -44,7 +44,6 @@ export class GiftsService {
   async getGifts(limit = MAX_GIFTS_PER_REQUEST, offset = 0) {
     const result = await this.giftModel
       .find()
-      .select('status updatedAt giftCode -_id')
       .skip(Number(offset))
       .limit(Number(limit))
       .exec();
