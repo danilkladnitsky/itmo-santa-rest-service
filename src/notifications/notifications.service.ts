@@ -16,17 +16,27 @@ export class NotificationService {
       return err.response?.data;
     }
   }
-  async sendNotification({
-    receiverId,
-    event,
-  }: {
-    receiverId: string;
-    event: string;
-  }) {
+  async sendNotification(notify) {
+    const event = notify.event;
+    const id = notify.receiverId;
     try {
       const res = await axios.post(
         `${process.env.TELEGRAM_BOT_REST_URL}/notifications/${event || 'send'}`,
-        { receiverId },
+        { id },
+      );
+
+      return res.data;
+    } catch (err) {
+      console.log(err);
+      return err.response?.data;
+    }
+  }
+
+  async notifyOnGiftCreation({ id }: { id: string }) {
+    try {
+      const res = await axios.post(
+        `${process.env.TELEGRAM_BOT_REST_URL}/notifications/RECEIVER_ATTACHED`,
+        { id },
       );
 
       return res.data;
@@ -48,11 +58,11 @@ export class NotificationService {
     try {
       await axios.post(
         `${process.env.TELEGRAM_BOT_REST_URL}/notifications/${event || 'send'}`,
-        { receiverId: creatorId },
+        { id: creatorId },
       );
       const res = await axios.post(
         `${process.env.TELEGRAM_BOT_REST_URL}/notifications/${event || 'send'}`,
-        { receiverId },
+        { id: receiverId },
       );
 
       return res.data;

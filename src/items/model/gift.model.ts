@@ -4,7 +4,7 @@ export const GiftSchema = new mongoose.Schema(
   {
     receiverId: { type: String },
     creatorId: { type: String },
-    giftCode: { type: Number, unique: true, default: 1000 },
+    giftCode: { type: Number, unique: true, default: 100000 },
     letter: {
       type: String,
       required: false,

@@ -25,7 +25,7 @@ export class GiftsService {
     let lastGiftCode = (lastGift as unknown as ICommonGift)[0]?.giftCode;
 
     if (!lastGiftCode) {
-      lastGiftCode = 1000;
+      lastGiftCode = 100000;
     }
 
     lastGiftCode = lastGiftCode + 1;
@@ -35,9 +35,10 @@ export class GiftsService {
       giftCode: lastGiftCode,
     });
 
-    this.handleGiftCreationNotification(newGift, 'RECEIVER_ATTACHED');
+    const res = await newGift.save();
 
-    return await newGift.save();
+    await this.handleGiftCreationNotification(newGift);
+    return res;
   }
 
   async getGifts(limit = MAX_GIFTS_PER_REQUEST, offset = 0) {
@@ -82,10 +83,6 @@ export class GiftsService {
       throw new NotFoundException({ message: 'Подарок не найден' });
     }
 
-    if (update.status && update.status === 'PENDING') {
-      this.handleGiftCreationNotification(result, 'RECEIVER_ATTACHED');
-    }
-
     if (update.status && update.status === 'DELIVERED') {
       this.handleGiftNotification(result, 'GIFT_DELIVERED');
     }
@@ -109,32 +106,30 @@ export class GiftsService {
 
   async handleGiftNotification(gift, event) {
     const notify = {
-      receiverId: gift.receiverId,
+      id: gift.receiverId,
       event,
     };
     const res = await this.notificationService.sendNotification(notify);
     return res;
   }
 
-  async handleGiftCreationNotification(gift, event) {
+  async handleGiftCreationNotification(gift) {
     const notify = {
-      receiverId: gift.receiverId,
-      creatorId: gift.creatorId,
-      event,
+      id: gift.creatorId,
     };
 
-    const res = await this.notificationService.sendPairNotification(notify);
+    const res = await this.notificationService.notifyOnGiftCreation(notify);
     return res;
   }
 
   async handleGiftReceive(gift) {
     const notifyReceiver = {
-      receiverId: gift.receiverId,
+      id: gift.receiverId,
       event: 'GIFT_RECEIVED',
     };
 
     const notifyCreator = {
-      receiverId: gift.creatorId,
+      id: gift.creatorId,
       event: 'GIFT_WAS_TAKEN',
     };
 
