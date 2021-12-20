@@ -9,6 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { TelegramElfGuard } from 'src/common/TelegramElfGuard';
 import { GiftDTO } from 'src/items/dto/gift.request.dto';
 import { GiftUpdateDTO } from 'src/items/dto/gift.update.dto';
 import { MultipleEntities } from 'src/items/dto/multipleEntities.request.dto';
@@ -56,5 +57,14 @@ export class GiftsController {
   @ApiBearerAuth()
   async removeGift(@Param('tg_id') id: string): Promise<ICommonGift> {
     return await this.giftsService.removeGift(id);
+  }
+
+  @UseGuards(TelegramElfGuard)
+  @Patch('updateByCode/:giftCode/:status')
+  async updateGiftByCode(
+    @Param('giftCode') giftCode: number,
+    @Param('status') status: string,
+  ) {
+    return await this.giftsService.updateGiftByCode(giftCode, status);
   }
 }

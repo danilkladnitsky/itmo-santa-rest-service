@@ -62,7 +62,7 @@ export class GiftsService {
     const result = await this.giftModel.findOne({ [property]: value });
 
     if (!result) {
-      throw new NotFoundException({ message: 'Подарок не найден' });
+      throw new NotFoundException('no letter was attached');
     }
 
     return result;
@@ -83,10 +83,28 @@ export class GiftsService {
     }
 
     if (update.status && update.status === 'DELIVERED') {
-      this.handleGiftNotification(result, 'GIFT_DELIVERED');
+      this.handleGiftDeliverNotification(result);
     }
 
     if (update.status && update.status === 'RECEIVED') {
+      this.handleGiftReceive(result);
+    }
+
+    return result;
+  }
+
+  async updateGiftByCode(giftCode: number, status: string) {
+    const result = await this.giftModel.findOneAndUpdate(
+      { giftCode },
+      { status },
+      { lean: true, returnOriginal: false },
+    );
+
+    if (status === 'DELIVERED') {
+      this.handleGiftDeliverNotification(result);
+    }
+
+    if (status === 'RECEIVED') {
       this.handleGiftReceive(result);
     }
 
@@ -103,13 +121,20 @@ export class GiftsService {
     return result;
   }
 
-  async handleGiftNotification(gift, event) {
-    const notify = {
-      id: gift.receiverId,
-      event,
+  async handleGiftDeliverNotification(gift) {
+    console.log(gift);
+
+    const notifyGiftCreator = {
+      receiverId: gift.creatorId,
+      event: 'MY_GIFT_DELIVERED',
     };
-    const res = await this.notificationService.sendNotification(notify);
-    return res;
+    const notifyGiftReceiver = {
+      receiverId: gift.receiverId,
+      event: 'GIFT_DELIVERED',
+    };
+    await this.notificationService.sendNotification(notifyGiftCreator);
+    await this.notificationService.sendNotification(notifyGiftReceiver);
+    return { status: 'ok' };
   }
 
   async handleGiftCreationNotification(gift) {
@@ -122,21 +147,21 @@ export class GiftsService {
   }
 
   async handleGiftReceive(gift) {
-    const notifyReceiver = {
-      id: gift.receiverId,
+    const notifyGiftCreator = {
+      receiverId: gift.creatorId,
+      event: 'MY_GIFT_RECEIVED',
+    };
+
+    const notifyGiftReceiver = {
+      receiverId: gift.receiverId,
       event: 'GIFT_RECEIVED',
     };
 
-    const notifyCreator = {
-      id: gift.creatorId,
-      event: 'GIFT_WAS_TAKEN',
-    };
-
     const resReceiver = await this.notificationService.sendNotification(
-      notifyReceiver,
+      notifyGiftCreator,
     );
     const resCreator = await this.notificationService.sendNotification(
-      notifyCreator,
+      notifyGiftReceiver,
     );
     return [resReceiver, resCreator];
   }
